@@ -32,9 +32,8 @@ pub fn next_chunk(buf: &mut MultiBuf) -> &[u8] {
     next.map_or(&[], Vec::as_slice)
 }
 
-
 fn main() {
-        let client = ffi::new_blobstore_client();
+    let client = ffi::new_blobstore_client();
 
     // Upload a blob.
     let chunks = vec![b"fearless".to_vec(), b"concurrency".to_vec()];

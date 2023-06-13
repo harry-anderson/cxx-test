@@ -1,7 +1,11 @@
 // src/main.rs
-
 #[cxx::bridge]
 mod ffi {
+    struct BlobMetadata {
+        size: usize,
+        tags: Vec<String>,
+    }
+
     extern "Rust" {
         type MultiBuf;
 
@@ -15,6 +19,8 @@ mod ffi {
 
         fn new_blobstore_client() -> UniquePtr<BlobstoreClient>;
         fn put(&self, parts: &mut MultiBuf) -> u64;
+        fn tag(&self,  blobid: u64, tag: &str);
+        fn metadata(&self,  blobid: u64) -> BlobMetadata;
     }
 }
 // An iterator over contiguous chunks of a discontiguous file object. Toy
@@ -40,4 +46,9 @@ fn main() {
     let mut buf = MultiBuf { chunks, pos: 0 };
     let blobid = client.put(&mut buf);
     println!("blobid = {}", blobid);
+    // add tag 
+    client.tag(blobid, "rust");
+
+    let metadata = client.metadata(blobid);
+    println!("tags = {:?}", metadata.tags);
 }
